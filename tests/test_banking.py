@@ -1,19 +1,25 @@
+import unittest
+import user as user_mod
 import bank_operations as bank
 
-def test_system():
-    # 1. Test: Successful Deposit
-    user = {"balance": 100, "transactions": []}
-    bank.deposit_money(user, 50)
-    assert user["balance"] == 150
 
-    # 2. Test: Overdraft Prevention
-    res = bank.withdraw_money(user, 200)
-    assert user["balance"] == 150
+class TestBank(unittest.TestCase):
+    def test_operations(self):
+        u = {"username": "t", "balance": 500.0, "transactions": []}
 
-    # 3. Test: Negative Amount Check
-    res_neg = bank.deposit_money(user, -10)
-    assert res_neg is False or user["balance"] == 150
-    print("All 3 tests passed successfully!")
+        # 1 Deposit Test
+        bank.deposit_money(u, 200.0)
+        self.assertEqual(u['balance'], 700.0)
 
-if __name__ == "__main__":
-    test_system()
+        # 2 Withdraw Test
+        res, msg = bank.withdraw_money(u, 100.0)
+        self.assertTrue(res)
+        self.assertEqual(u['balance'], 600.0)
+
+        # 3 Error Management Test, Negative numbers
+        res, msg = bank.withdraw_money(u, 1000.0)
+        self.assertFalse(res)
+
+
+if __name__ == '__main__':
+    unittest.main()
