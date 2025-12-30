@@ -30,11 +30,25 @@ def main():
                 if uname == "admin" and pwd == "admin123":
                     admin_dashboard(users)
                     continue
-                current_user = user_mod.login_user(users, uname, pwd)
-                if not current_user:
-                    print("Invalid credentials!")
 
-            elif choice == "3":
+                res = user_mod.login_user(users, uname, pwd)
+                if res == "LOCKED":
+                    print("!!! Account is LOCKED. Contact admin. !!!")
+                elif res:
+                    current_user = res
+                    print(f"Login Successful! Welcome {current_user['full_name']}")
+                    current_user['failed_attempts'] = 0
+                    fm.save_data(USERS_FILE, users)
+                else:
+                    print("Invalid credentials!")
+                    if uname in users:
+                        users[uname]['failed_attempts'] = users[uname].get('failed_attempts', 0) + 1
+                        if users[uname]['failed_attempts'] >= 3:
+                            users[uname]['status'] = 'locked'
+                            print("Too many attempts. Account LOCKED!")
+                        fm.save_data(USERS_FILE, users)
+
+            elif choice == "3":  # Bu satır 'elif choice == "2"' ile aynı hizada olmalı
                 break
 
         else:

@@ -34,7 +34,6 @@
                 "channel": "ATM"
             }
         ],
-        "status": "locked",
-        "failed_attempts": 3
+        "status": "active"
     }
 }
