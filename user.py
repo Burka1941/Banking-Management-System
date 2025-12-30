@@ -11,7 +11,7 @@ def register_user(users, username, password, full_name, initial_deposit):
 
     users[username] = {
         "username": username,
-        "hashed_password": hash_password(password),
+        "password": hash_password(password),
         "full_name": full_name,
         "balance": float(initial_deposit),
         "transactions": [],
