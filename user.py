@@ -20,12 +20,16 @@ def register_user(users, username, password, full_name, initial_deposit):
     return True, "Registration successful"
 
 
-def login_user(users, username, password):
-    if username in users:
-        user = users[username]
-        if user.get('status') == 'locked':
-            return "locked"
+def login_user(users, uname, pwd):
+    if uname in users:
+        user_data = users[uname]
 
-        if user['hashed_password'] == hash_password(password):
-            return user
+        stored_password = user_data.get('password')
+
+        if stored_password and stored_password == hash_password(pwd):
+            if user_data.get('is_locked', False):
+                return "LOCKED"
+
+            return user_data
+
     return None
