@@ -1,6 +1,10 @@
 #W3
 from datetime import datetime
 
+
+def check_balance(user):
+    return user.get('balance', 0.0)
+
 def deposit_money(user, amount, channel="ATM"):
     amount = float(amount)
     user["balance"] += amount

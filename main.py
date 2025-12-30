@@ -9,7 +9,6 @@ USERS_FILE = "data/users.json"
 def main():
     users = fm.load_data(USERS_FILE, "")
     current_user = None
-
     while True:
         if not current_user:
             print("\n--- WELCOME TO YU-BANK ---")
@@ -31,33 +30,42 @@ def main():
                 if uname == "admin" and pwd == "admin123":
                     admin_dashboard(users)
                     continue
-
                 current_user = user_mod.login_user(users, uname, pwd)
-                if not current_user: print("Invalid credentials!")
+                if not current_user:
+                    print("Invalid credentials!")
 
             elif choice == "3":
                 break
 
         else:
             print(f"\n--- Welcome, {current_user['full_name']} ---")
+            print(f"Current Balance: ${current_user['balance']:.2f}")
             print("1. Deposit\n2. Withdraw\n3. View History\n4. Logout")
             u_choice = input("Choice: ")
 
             if u_choice == "1":
-                amt = input("Amount: ")
+                amt = float(input("Amount to Deposit: "))
                 bank.deposit_money(current_user, amt)
                 fm.save_data(USERS_FILE, users)
+                print(f"Success! New Balance: ${current_user['balance']:.2f}")
+
             elif u_choice == "2":
-                amt = input("Amount: ")
+                amt = float(input("Amount to Withdraw: "))
                 res, msg = bank.withdraw_money(current_user, amt)
-                print(msg)
-                fm.save_data(USERS_FILE, users)
+                if res:
+                    fm.save_data(USERS_FILE, users)
+                    print(f"Success! Remaining Balance: ${current_user['balance']:.2f}")
+                else:
+                    print(f"Error: {msg}")
+
             elif u_choice == "3":
                 history = report.view_transaction_history(current_user)
-                for t in history: print(t)
+                print("\n--- Transaction History ---")
+                for t in history:
+                    print(t)
+
             elif u_choice == "4":
                 current_user = None
-
 def admin_dashboard(users):
     stats = report.generate_summary_report(users)
     print("\n--- ADMIN DASHBOARD ---")
